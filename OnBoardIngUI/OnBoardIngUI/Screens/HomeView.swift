@@ -12,7 +12,7 @@ struct HomeView: View {
     var body: some View {
         VStack(spacing: 40) {
             Text("Home View").font(.largeTitle)
-            Button(action:{
+            Button(action: {
                 isShowOnBoard = true
             }) {
                 Text("Go to OnBoard")
