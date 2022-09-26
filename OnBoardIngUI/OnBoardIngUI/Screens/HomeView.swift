@@ -17,7 +17,7 @@ struct HomeView: View {
             }) {
                 Text("Go to OnBoard")
             }
-        }
+        }.background(.white)
     }
 }
 

@@ -11,7 +11,6 @@ struct ContentView: View {
     //User defaults
     @AppStorage("onboarding") var isShowOnBoard: Bool = true
     var body: some View {
-            
             if isShowOnBoard {
                 OnBoardView()
             } else {
