@@ -11,12 +11,36 @@ struct HomeView: View {
     @AppStorage("onboarding") var isShowOnBoard = false
     var body: some View {
         VStack(spacing: 40) {
-            Text("Home View").font(.largeTitle)
+            // Header
+            Spacer()
+            ZStack {
+                CircleGroupView.init(shapeColor: .secondary, shapeOpacity: 0.2)
+                Image("character-2")
+                    .resizable()
+                    .scaledToFit()
+                .padding()
+            }
+            //Center
+            Text("The time that leads to mastery is dependent on the intesity of our focus")
+                .font(.title3)
+                .fontWeight(.light)
+                .foregroundColor(.secondary)
+                .multilineTextAlignment(.center)
+                .padding()
+            
+            //Footer
+            Spacer()
             Button(action: {
                 isShowOnBoard = true
             }) {
-                Text("Go to OnBoard")
+                Image(systemName: "arrow.triangle.2.circlepath.circle.fill")
+                    .imageScale(.large)
+                Text("Restart")
+                    .font(.system(.title2))
             }
+            .buttonStyle(.borderedProminent)
+            .buttonBorderShape(.roundedRectangle(radius: 4))
+            .controlSize(.large)
         }.background(.white)
     }
 }
