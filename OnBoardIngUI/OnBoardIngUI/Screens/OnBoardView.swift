@@ -98,22 +98,6 @@ struct OnBoardView: View {
                                 })
                             
                         )
-//                        gesture(
-//                            DragGesture()
-//                                .onChanged({ gesture in
-////                                    if gesture.translation.width > 0 && buttonOffSet <= buttonWidth - 80 {
-////                                        buttonOffSet = gesture.translation.width
-////                                    }
-//                                })
-//                                .onEnded({ _ in
-////                                    if buttonOffSet > buttonWidth / 2 {
-////                                        buttonOffSet = buttonWidth - 80
-////                                        isShowOnBoard = false
-////                                    } else {
-////                                        buttonOffSet = 0
-////                                    }
-//                                })
-//                        )
                         Spacer()
                     }
                 }// footer
