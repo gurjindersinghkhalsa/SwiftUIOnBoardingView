@@ -9,6 +9,8 @@ import SwiftUI
 
 struct OnBoardView: View {
     @AppStorage("onboarding") var isShowOnBoard = true
+    @State private var buttonWidth: Double = UIScreen.main.bounds.width - 80
+    @State private var buttonOffSet: CGFloat = 0
     var body: some View {
         ZStack {
             Color("ColorBlue").ignoresSafeArea(.all, edges: .all) // View
@@ -61,15 +63,15 @@ struct OnBoardView: View {
 //                    3. Capuse dynamic
                     HStack {
                         Capsule()
-                            .fill(.red)
-                            .frame(width: 80)
+                            .fill(Color("Redish"))
+                            .frame(width: buttonOffSet + 80)
                         Spacer()
                     }
 //                    4. Circle
                     HStack {
                         ZStack() {
                             Circle()
-                                .fill(.red)
+                                .fill(Color("ColorRed"))
                             Circle()
                                 .fill(.black.opacity(0.15))
                                 .padding(8)
@@ -78,13 +80,44 @@ struct OnBoardView: View {
                         }
                         .foregroundColor(.white)
                         .frame(width: 80, height: 80, alignment: .center)
-                        .onTapGesture {
-                            isShowOnBoard = false
-                        }
+                        .offset(x: buttonOffSet)
+                        .gesture(
+                            DragGesture()
+                                .onChanged({ gesture in
+                                if gesture.translation.width > 0 && buttonOffSet <= buttonWidth - 80 {
+                                    buttonOffSet = gesture.translation.width
+                                }
+                            })
+                                .onEnded({ _ in
+                                    if buttonOffSet > buttonWidth/2 {
+                                        buttonOffSet = buttonWidth - 80
+                                        isShowOnBoard = false
+                                    } else {
+                                        buttonOffSet = 0
+                                    }
+                                })
+                            
+                        )
+//                        gesture(
+//                            DragGesture()
+//                                .onChanged({ gesture in
+////                                    if gesture.translation.width > 0 && buttonOffSet <= buttonWidth - 80 {
+////                                        buttonOffSet = gesture.translation.width
+////                                    }
+//                                })
+//                                .onEnded({ _ in
+////                                    if buttonOffSet > buttonWidth / 2 {
+////                                        buttonOffSet = buttonWidth - 80
+////                                        isShowOnBoard = false
+////                                    } else {
+////                                        buttonOffSet = 0
+////                                    }
+//                                })
+//                        )
                         Spacer()
                     }
                 }// footer
-                .frame(height: 80, alignment: .center)
+                .frame(width: buttonWidth,height: 80, alignment: .center)
                 .padding()
                 
             } // Vstack
