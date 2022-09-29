@@ -11,6 +11,8 @@ struct OnBoardView: View {
     @AppStorage("onboarding") var isShowOnBoard = true
     @State private var buttonWidth: Double = UIScreen.main.bounds.width - 80
     @State private var buttonOffSet: CGFloat = 0
+    @State private var isAnimating: Bool = false
+    
     var body: some View {
         ZStack {
             Color("ColorBlue").ignoresSafeArea(.all, edges: .all) // View
@@ -34,6 +36,9 @@ struct OnBoardView: View {
                     .padding(.horizontal, 10)
 //                    .background(.red)
                 }
+                .opacity(isAnimating ? 1 : 0)
+                .offset(y: isAnimating ? 0 : -40)
+                .animation(.easeOut(duration: 1), value: isAnimating)
                 //MARK - center
                 ZStack{
                      //:Zstack
@@ -41,6 +46,9 @@ struct OnBoardView: View {
                     Image("character-1")
                         .resizable()
                         .scaledToFit()
+                        .opacity(isAnimating ? 1 : 0)
+                        .animation(.easeOut(duration: 0.5), value: isAnimating)
+
                 } //: Center
                 
                 Spacer()
@@ -48,26 +56,27 @@ struct OnBoardView: View {
                 //MARK - Footer
                 
                 ZStack {
-//                    1. Background Static
+                    //                    1. Background Static
                     Capsule()
                         .fill(.white.opacity(0.2))
                     Capsule()
                         .fill(.white.opacity(0.2))
                         .padding(8)
-//                    2. Call to Action (static)
-                        Text("Get Started")
+                    //                    2. Call to Action (static)
+                    Text("Get Started")
                         .font(.system(.title3,design: .rounded))
                         .fontWeight(.bold)
                         .foregroundColor(.white)
                         .offset(x: 20)
-//                    3. Capuse dynamic
+                    //                    3. Capuse dynamic
                     HStack {
                         Capsule()
                             .fill(Color("Redish"))
+//                            .fill(.green)
                             .frame(width: buttonOffSet + 80)
                         Spacer()
                     }
-//                    4. Circle
+                    //                    4. Circle
                     HStack {
                         ZStack() {
                             Circle()
@@ -84,28 +93,35 @@ struct OnBoardView: View {
                         .gesture(
                             DragGesture()
                                 .onChanged({ gesture in
-                                if gesture.translation.width > 0 && buttonOffSet <= buttonWidth - 80 {
-                                    buttonOffSet = gesture.translation.width
-                                }
-                            })
-                                .onEnded({ _ in
-                                    if buttonOffSet > buttonWidth/2 {
-                                        buttonOffSet = buttonWidth - 80
-                                        isShowOnBoard = false
-                                    } else {
-                                        buttonOffSet = 0
+                                    if gesture.translation.width > 0 && buttonOffSet <= buttonWidth - 80 {
+                                        buttonOffSet = gesture.translation.width
                                     }
                                 })
-                            
+                                .onEnded({ _ in
+                                    withAnimation(Animation.easeOut(duration: 0.5)) {
+                                        if buttonOffSet > buttonWidth/2 {
+                                            buttonOffSet = buttonWidth - 80
+                                            isShowOnBoard = false
+                                        } else {
+                                            buttonOffSet = 0
+                                        }
+                                    }
+                                })
                         )
                         Spacer()
                     }
                 }// footer
                 .frame(width: buttonWidth,height: 80, alignment: .center)
                 .padding()
-                
+                .opacity(isAnimating ? 1 : 0)
+                .offset(y: isAnimating ? 0 : 40)
+                .animation(.easeOut(duration: 1), value: isAnimating)
+
             } // Vstack
         } // Zstack
+        .onAppear {
+            isAnimating = true
+        }
     }
 }
 
