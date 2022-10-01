@@ -13,12 +13,14 @@ struct OnBoardView: View {
     @State private var buttonOffSet: CGFloat = 0
     @State private var isAnimating: Bool = false
     
+    @State private var imageOffset: CGSize = .zero
+    @State private var indicatorOpacity: Double = 1.0
     var body: some View {
         ZStack {
             Color("ColorBlue").ignoresSafeArea(.all, edges: .all) // View
             VStack(spacing: 20) {
                 //MARK - Header
-                
+
                 Spacer()
                 VStack(spacing: 0) {
                     Text("Share")
@@ -39,18 +41,53 @@ struct OnBoardView: View {
                 .opacity(isAnimating ? 1 : 0)
                 .offset(y: isAnimating ? 0 : -40)
                 .animation(.easeOut(duration: 1), value: isAnimating)
+
                 //MARK - center
                 ZStack{
                      //:Zstack
+
                     CircleGroupView.init(shapeColor: .white, shapeOpacity: 0.2)
+                    //parallax effect use below 3 props
+                        .offset(x: imageOffset.width * -1) // will move rings in opposite direction
+                        .blur(radius: abs(imageOffset.width/5))
+                        .animation(.easeOut(duration: 1), value: imageOffset)
                     Image("character-1")
                         .resizable()
                         .scaledToFit()
                         .opacity(isAnimating ? 1 : 0)
                         .animation(.easeOut(duration: 0.5), value: isAnimating)
+                        .offset(x: imageOffset.width * 1.2, y: 0)
+                        .rotationEffect(.degrees(Double(imageOffset.width/20))) //Rotation effect
+                        .gesture(
+                            DragGesture() //Drag gesture
+                                .onChanged({ gesture in
+                                    if abs(imageOffset.width) <= 150 { // stop img to move outside view
+                                        imageOffset = gesture.translation
+                                        withAnimation(.linear(duration: 0.25)){
+                                            indicatorOpacity = 0
+                                        }
+                                    }
+                                })
+                                .onEnded({ _ in
+                                    imageOffset = .zero
+                                    withAnimation(.linear(duration: 0.25)){
+                                        indicatorOpacity = 1
+                                    }
+                                })
+                        )
+                        .animation(.easeOut(duration: 1), value: imageOffset)
 
                 } //: Center
-                
+                .overlay(
+                    Image(systemName: "arrow.left.and.right.circle")
+                        .font(.system(size: 44, weight: .ultraLight))
+                        .foregroundColor(.white)
+                        .offset(y: 20)
+                        .opacity(isAnimating ? 1 : 0)
+                        .animation(.easeOut(duration: 1).delay(2), value: isAnimating)
+                        .opacity(indicatorOpacity)
+                    ,alignment: .bottom
+                )
                 Spacer()
                 
                 //MARK - Footer
