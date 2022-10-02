@@ -11,6 +11,7 @@ struct HomeView: View {
     @AppStorage("onboarding") var isShowOnBoard = false
     @State private var isAnimating: Bool = false
     var body: some View {
+        
         VStack(spacing: 40) {
             // Header
             Spacer()
@@ -39,6 +40,7 @@ struct HomeView: View {
             Spacer()
             Button(action: {
                 withAnimation {
+                    playSound(sound: "Restart", type: "mp3")
                     isShowOnBoard = true
                 }
             }) {
@@ -51,14 +53,16 @@ struct HomeView: View {
             .buttonBorderShape(.roundedRectangle(radius: 4))
             .controlSize(.large)
         }
-        .background(.white)
+        .background(Color("ColorBlue"))
         .onAppear {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
                 isAnimating = true
             }
             
-        }
+        }.preferredColorScheme(.dark)
     }
+    
+
 }
 
 struct HomeView_Previews: PreviewProvider {

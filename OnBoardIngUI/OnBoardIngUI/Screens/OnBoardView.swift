@@ -12,9 +12,12 @@ struct OnBoardView: View {
     @State private var buttonWidth: Double = UIScreen.main.bounds.width - 80
     @State private var buttonOffSet: CGFloat = 0
     @State private var isAnimating: Bool = false
-    
     @State private var imageOffset: CGSize = .zero
     @State private var indicatorOpacity: Double = 1.0
+    @State private var textTitle: String = "Share."
+    
+    let hapticFeedback = UINotificationFeedbackGenerator()
+    
     var body: some View {
         ZStack {
             Color("ColorBlue").ignoresSafeArea(.all, edges: .all) // View
@@ -23,10 +26,12 @@ struct OnBoardView: View {
 
                 Spacer()
                 VStack(spacing: 0) {
-                    Text("Share")
+                    Text(textTitle)
                         .foregroundColor(.white)
                         .font(.system(size: 60))
                         .fontWeight(.heavy)
+                        .transition(.opacity)
+                        .id(textTitle)
                     Text("""
                     It's not how much we give but
                     how much love we put into giving.
@@ -65,6 +70,7 @@ struct OnBoardView: View {
                                         imageOffset = gesture.translation
                                         withAnimation(.linear(duration: 0.25)){
                                             indicatorOpacity = 0
+                                            textTitle = "Give."
                                         }
                                     }
                                 })
@@ -72,6 +78,7 @@ struct OnBoardView: View {
                                     imageOffset = .zero
                                     withAnimation(.linear(duration: 0.25)){
                                         indicatorOpacity = 1
+                                        textTitle = "Share."
                                     }
                                 })
                         )
@@ -137,9 +144,12 @@ struct OnBoardView: View {
                                 .onEnded({ _ in
                                     withAnimation(Animation.easeOut(duration: 0.5)) {
                                         if buttonOffSet > buttonWidth/2 {
+                                            hapticFeedback.notificationOccurred(.success)
+                                            playSound(sound: "ShortSuccess", type: "mp3")
                                             buttonOffSet = buttonWidth - 80
                                             isShowOnBoard = false
                                         } else {
+                                            hapticFeedback.notificationOccurred(.warning)
                                             buttonOffSet = 0
                                         }
                                     }
@@ -159,6 +169,7 @@ struct OnBoardView: View {
         .onAppear {
             isAnimating = true
         }
+        .preferredColorScheme(.dark)
     }
 }
 
